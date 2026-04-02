@@ -18,7 +18,7 @@ module Kernel
 
 //enable ==========================================================================
 reg en;	
-always @(posedge clk or posedge rst) begin 
+always @(posedge clk) begin 
 	if ( rst || conv_and_relu_done ) en <= 1'b0;
 	else if ( op_st ) en <= 1'b1;
 	else en <= en;
@@ -51,7 +51,7 @@ reg signed [6:0] data0, data1, data2, data3, data4, data5, data6, data7, data8, 
 (* use_dsp = "yes" *)	reg signed [10:0] m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15;				
 reg signed [12:0] p0 , p1, p2, p3;
 reg [8:0] cnt;
-always @(posedge clk or posedge rst) begin 
+always @(posedge clk ) begin 
 	if ( rst || end_out ) cnt <= 0;
 	else if ( en == 1 && end_out == 0 ) begin 
 		cnt <= cnt + 1;
@@ -115,20 +115,20 @@ always @ ( posedge clk or posedge rst ) begin
 end
 
 // start_out & end_out & output_num==========================================================================
-always @(posedge clk or posedge rst) begin 
+always @(posedge clk ) begin 
 	if ( rst || end_out) output_num <= 1;
 	else if ( output_num[in_vector_size_check_bit] == 1'b1 ) output_num <= output_num;	//this line can remove
 	else if ( start_out ) output_num <= output_num + 1;
 	else output_num <= output_num;
 end
 
-always @ ( posedge clk or posedge rst ) begin
+always @ ( posedge clk ) begin
 	if ( rst || end_out || conv_and_relu_done) start_out <= 0;
 	else if ( output_num[in_vector_size_check_bit] == 1'b1 ) start_out <= 0;
 	else if ( cnt == 17 ) start_out <= 1;
 end
 
-always @(posedge clk or posedge rst) begin 
+always @(posedge clk ) begin 
 	if ( rst || end_out ) end_out <= 0;
 	else if ( output_num[in_vector_size_check_bit] == 1'b1 ) end_out <= 1;
 	else end_out <= 0;
